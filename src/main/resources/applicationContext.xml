@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--读取外部的properties文件-->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <!--${driverClass}表示引用properties文件中的key对应的value值-->
+        <property name="driverClass" value="${jdbc.driverClass}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <!--创建SqlSessionFactory对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--创建这个对象，需要依赖数据源对象-->
+        <property name="dataSource" ref="dataSource" />
+        <!--配置包扫描别名-->
+        <property name="typeAliasesPackage" value="com.kgc.pojo" />
+        <!--引用mybatis的主配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+
+    <!--配置mapper接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--引用SQLSessionFactory对象-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!--配置mapper接口包扫描-->
+        <property name="basePackage" value="com.kgc.mapper" />
+    </bean>
+
+    <!--配置注解扫描-->
+    <context:component-scan base-package="com.kgc.service" />
+
+    <!--配置事务处理-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--依赖数据源，事务处理必须有数据库连接对象-->
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--配置注解驱动事务管理-->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
