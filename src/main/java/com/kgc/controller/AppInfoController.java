@@ -10,17 +10,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/appinfo")
+@RequestMapping("/app")
 public class AppInfoController {
 
     @Autowired
     private AppinfoService appinfoService;
 
-
     @RequestMapping("/list")
+    public String list(){
+
+        return "developer/appinfolist";
+    }
+
+
+
+    /*@RequestMapping("/list")
     @ResponseBody
     public List<AppInfo> getAppInfos(){
         return appinfoService.selectAppInfoAll();
-    }
+    }*/
 
 }

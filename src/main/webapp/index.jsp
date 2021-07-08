@@ -5,6 +5,6 @@
 </head>
 <body>
     <%--<h1>你好APPinfo</h1>--%>
-    <jsp:forward page="jsp/devlogin.jsp"></jsp:forward>
+    <jsp:forward page="/toDevLogin"></jsp:forward>
 </body>
 </html>

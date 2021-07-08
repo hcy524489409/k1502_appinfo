@@ -15,6 +15,15 @@ public class DevUserController {
     @Autowired
     private DevUserService devUserService;
 
+
+    @RequestMapping("/logout")
+    public String logout(HttpSession session){
+        //把存储在session域中的用户信息删除掉
+        session.removeAttribute("devUser");
+        //跳转到登录页面
+        return "redirect:/index.jsp";
+    }
+
     @RequestMapping("/login")
     public String login(String devcode, String devpassword, HttpSession session){
         //调用service层方法，实现在数据库查询匹配
@@ -27,6 +36,6 @@ public class DevUserController {
         //如果用存在就存储用户信息到session域中
         session.setAttribute("devUser",devUser);
         //跳转到主页面
-        return "redirect:/jsp/developer/main.jsp";
+        return "developer/main";
     }
 }

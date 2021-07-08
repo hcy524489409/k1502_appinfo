@@ -27,7 +27,7 @@
 	<link href="${pageContext.request.contextPath }/statics/css/jqvmap.min.css" rel="stylesheet" />
 	<link href="${pageContext.request.contextPath }/statics/css/dropzone.min.css" rel="stylesheet">
 	<!-- Custom Theme Style -->
-	<link href="${pageContext.request.contextPath }/statics/css/custom.min.css"	rel="stylesheet">
+	<link href="${pageContext.request.contextPath }/statics/css/custom.min.css" rel="stylesheet">
 	
 	<!-- add localcss 2016-8-18 -->
 	<link href='${pageContext.request.contextPath }/statics/localcss/appinfoadd.css' rel='stylesheet'>
@@ -82,7 +82,7 @@
 										class="fa fa-chevron-down"></span>
 								    </a>
 									<ul class="nav child_menu">
-										<li><a href="${pageContext.request.contextPath }/dev/flatform/app/list">APP维护</a>
+										<li><a href="${pageContext.request.contextPath }/app/list">APP维护</a>
 										</li>
 									</ul>
 								</li>
@@ -92,7 +92,7 @@
 											class="fa fa-chevron-down"></span>
 									</a>
 									<ul class="nav child_menu">
-										<li><a href="${pageContext.request.contextPath }/jsp/developer/add.jsp">添加</a></li>
+										<li><a href="${pageContext.request.contextPath }/WEB-INF/jsp/developer/add.jsp">添加</a></li>
 										<li><a href="${pageContext.request.contextPath }/dev/flatform/app/list">修改</a></li>
 									</ul>
 								</li>
@@ -111,6 +111,7 @@
 							<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
 						</a> <a data-toggle="tooltip" data-placement="top" title="Lock"> <span
 							class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+						<%--页面右下角的退出按钮--%>
 						</a> <a data-toggle="tooltip" data-placement="top" title="Logout"
 							href="${pageContext.request.contextPath }/dev/logout"> <span
 							class="glyphicon glyphicon-off" aria-hidden="true"></span> </a>
@@ -136,6 +137,8 @@
 									alt="">${devUserSession.devCode } <span
 									class=" fa fa-angle-down"></span> </a>
 								<ul class="dropdown-menu dropdown-usermenu pull-right">
+
+									<%--页面右上角的退出按钮--%>
 									<li><a
 										href="${pageContext.request.contextPath }/dev/logout"><i
 											class="fa fa-sign-out pull-right"></i> Log Out</a>
