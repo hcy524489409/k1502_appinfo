@@ -57,7 +57,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <!--放行静态资源-->
-            <mvc:exclude-mapping path="statics/**" />
+            <mvc:exclude-mapping path="/statics/**" />
             <!--放行去登录页面-->
             <mvc:exclude-mapping path="/toDevLogin" />
             <!--放行登录验证-->

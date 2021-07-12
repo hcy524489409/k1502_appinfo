@@ -13,14 +13,14 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
-				<form method="post" action="list">
-					<input type="hidden" name="pageIndex" value="1" />
+				<form method="post" action="${pageContext.request.contextPath}/app/list">
+					<input type="hidden" name="pageNo" value="1" />
 			    <ul>
 					<li>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">软件名称</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input name="softwarename" type="text" class="form-control col-md-7 col-xs-12" value="${querySoftwareName }">
+								<input name="softwarename" type="text" class="form-control col-md-7 col-xs-12" value="${appInfoCondition.softwarename }">
 							</div>
 						</div>
 					</li>
@@ -50,7 +50,7 @@
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">一级分类</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select id="queryCategoryLevel1" name="categorylevel1" class="form-control">
-									<option value="">--请选择--</option>
+									<option value="0">--请选择--</option>
         						</select>
 							</div>
 						</div>
@@ -61,7 +61,7 @@
 							<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="hidden" name="categorylevel2list" id="categorylevel2list"/>
         						<select name="categorylevel2" id="queryCategoryLevel2" class="form-control">
-									<option value="">--请选择--</option>
+									<option value="0">--请选择--</option>
         						</select>
 							</div>
 						</div>
@@ -71,7 +71,7 @@
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">三级分类</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select name="categorylevel3" id="queryCategoryLevel3" class="form-control">
-									<option value="">--请选择--</option>
+									<option value="0">--请选择--</option>
 								</select>
 							</div>
 						</div>
@@ -135,19 +135,17 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="appInfo" items="${appInfoList }" varStatus="status">
+								<c:forEach var="appInfo" items="${pageInfo.list}" varStatus="status">
 									<tr role="row" class="odd">
-										<td tabindex="0" class="sorting_1">${appInfo.softwareName}</td>
-										<td>${appInfo.APKName }</td>
-										<td>${appInfo.softwareSize }</td>
-										<td>${appInfo.flatformName }</td>
-										<td>${appInfo.categoryLevel1Name } -> ${appInfo.categoryLevel2Name } -> ${appInfo.categoryLevel3Name }</td>
-										<td><span id="appInfoStatus${appInfo.id}">${appInfo.statusName }</span></td>
+										<td tabindex="0" class="sorting_1">${appInfo.softwarename}</td>
+										<td>${appInfo.apkname }</td>
+										<td>${appInfo.softwaresize }</td>
+										<td>${appInfo.flatformname }</td>
+										<td>${appInfo.categorylevel1name } -> ${appInfo.categorylevel2name } -> ${appInfo.categorylevel3name }</td>
+										<td><span id="appInfoStatus${appInfo.id}">${appInfo.statusname }</span></td>
 										<td>${appInfo.downloads }</td>
-										<td>${appInfo.versionNo }</td>
+										<td>${appInfo.versionname }</td>
 										<td>
-										
-										
 										<div class="btn-group">
                       <button type="button" class="btn btn-danger">点击操作</button>
                       <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -157,26 +155,26 @@
                       <ul class="dropdown-menu" role="menu">
                         <li>
                         	<c:choose>
-											<c:when test="${appInfo.status == 2 || appInfo.status == 5}">
-												<a class="saleSwichOpen" saleSwitch="open" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName } data-toggle="tooltip" data-placement="top" title="" data-original-title="恭喜您，您的审核已经通过，您可以点击上架发布您的APP">上架</a>
-											</c:when>
-											<c:when test="${appInfo.status == 4}">
-												<a class="saleSwichClose" saleSwitch="close" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName } data-toggle="tooltip" data-placement="top" title="" data-original-title="您可以点击下架来停止发布您的APP，市场将不提供APP的下载">下架</a>
-											</c:when>
-										</c:choose>
+								<c:when test="${appInfo.status == 2 || appInfo.status == 5}">
+									<a class="saleSwichOpen" saleSwitch="open" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwarename } data-toggle="tooltip" data-placement="top" title="" data-original-title="恭喜您，您的审核已经通过，您可以点击上架发布您的APP">上架</a>
+								</c:when>
+								<c:when test="${appInfo.status == 4}">
+									<a class="saleSwichClose" saleSwitch="close" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwarename } data-toggle="tooltip" data-placement="top" title="" data-original-title="您可以点击下架来停止发布您的APP，市场将不提供APP的下载">下架</a>
+								</c:when>
+							</c:choose>
                         </li>
                         <li><a class="addVersion" appinfoid="${appInfo.id }" data-toggle="tooltip" data-placement="top" title="" data-original-title="新增APP版本信息">新增版本</a>
                         </li>
                         <li><a class="modifyVersion" 
-											appinfoid="${appInfo.id }" versionid="${appInfo.versionId }" status="${appInfo.status }" 
-											statusname="${appInfo.statusName }"											
+											appinfoid="${appInfo.id }" versionid="${appInfo.versionid }" status="${appInfo.status }"
+											statusname="${appInfo.statusname }"
 											data-toggle="tooltip" data-placement="top" title="" data-original-title="修改APP最新版本信息">修改版本</a>
                         </li>
                         <li><a  class="modifyAppInfo" 
-											appinfoid="${appInfo.id }" status="${appInfo.status }" statusname="${appInfo.statusName }"
+											appinfoid="${appInfo.id }" status="${appInfo.status }" statusname="${appInfo.statusname }"
 											data-toggle="tooltip" data-placement="top" title="" data-original-title="修改APP基础信息">修改</a></li>
                         <li><a  class="viewApp" appinfoid=${appInfo.id }  data-toggle="tooltip" data-placement="top" title="" data-original-title="查看APP基础信息以及全部版本信息">查看</a></li>
-						<li><a  class="deleteApp" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName } data-toggle="tooltip" data-placement="top" title="" data-original-title="删除APP基础信息以及全部版本信息">删除</a></li>
+						<li><a  class="deleteApp" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwarename } data-toggle="tooltip" data-placement="top" title="" data-original-title="删除APP基础信息以及全部版本信息">删除</a></li>
                       </ul>
                     </div>
 										</td>
@@ -188,34 +186,34 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-5">
-						<div class="dataTables_info" id="datatable-responsive_info"
-							role="status" aria-live="polite">共${pages.totalCount }条记录
-							${pages.currentPageNo }/${pages.totalPageCount }页</div>
-					</div>
+					<div class="dataTables_info" id="datatable-responsive_info"
+						 role="status" aria-live="polite">共${pageInfo.total }条记录
+						${pageInfo.pageNum }/${pageInfo.pages }页</div>
+				</div>
 					<div class="col-sm-7">
 						<div class="dataTables_paginate paging_simple_numbers"
 							id="datatable-responsive_paginate">
 							<ul class="pagination">
-								<c:if test="${pages.currentPageNo > 1}">
+								<c:if test="${pageInfo.pageNum > 1}">
 									<li class="paginate_button previous"><a
 										href="javascript:page_nav(document.forms[0],1);"
 										aria-controls="datatable-responsive" data-dt-idx="0"
 										tabindex="0">首页</a>
 									</li>
 									<li class="paginate_button "><a
-										href="javascript:page_nav(document.forms[0],${pages.currentPageNo-1});"
+										href="javascript:page_nav(document.forms[0],${pageInfo.pageNum-1});"
 										aria-controls="datatable-responsive" data-dt-idx="1"
 										tabindex="0">上一页</a>
 									</li>
 								</c:if>
-								<c:if test="${pages.currentPageNo < pages.totalPageCount }">
+								<c:if test="${pageInfo.pageNum < pageInfo.pages }">
 									<li class="paginate_button "><a
-										href="javascript:page_nav(document.forms[0],${pages.currentPageNo+1 });"
+										href="javascript:page_nav(document.forms[0],${pageInfo.pageNum+1 });"
 										aria-controls="datatable-responsive" data-dt-idx="1"
 										tabindex="0">下一页</a>
 									</li>
 									<li class="paginate_button next"><a
-										href="javascript:page_nav(document.forms[0],${pages.totalPageCount });"
+										href="javascript:page_nav(document.forms[0],${pageInfo.pages});"
 										aria-controls="datatable-responsive" data-dt-idx="7"
 										tabindex="0">最后一页</a>
 									</li>
@@ -234,6 +232,110 @@
 <script>
 
 	$(function () {
+
+	    //1.加载一级分类
+	    $.ajax({
+			url:"/category/list",
+			data:{parentId:0},
+			success:function (data) {
+				//1.清空二级和三级分类信息
+				$("#queryCategoryLevel2>option:gt(0)").remove();
+                $("#queryCategoryLevel3>option:gt(0)").remove();
+				//2.把从后台返回的数据拼接到字符串中去
+				var options = "";
+
+				//遍历数组
+				for(var i =0 ; i < data.length; i++ ){
+				    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
+				}
+
+
+				//3.把拼接的字符串添加到一级分类的下拉列表框中
+				$("#queryCategoryLevel1").append(options);
+            },
+			error:function () {
+				console.log("加载失败");
+            }
+		})
+
+		//2.根据一级分类的选择去加载对应的二级分类
+		/*
+			实现二级分类业务流程
+				1.搞明白二级分类中的数据是怎么来的
+				2.给一级分类的下拉列表框添加一个change事件
+				3.获取一级分类的value值
+				4.把这个值作为参数向后台发送异步请求 /category/list
+					传递的参数还是parentId 只不过这个id的值不一样
+				5.获取后台传递过来的值，然后加载到对应的二级分类下拉框中
+		 */
+        $("#queryCategoryLevel1").change(function () {
+			var parentId = $(this).val();
+			//如果父级id的值不等于0，才发送异步请求，不然请求的数据有问题
+            //1.清空二级和三级分类下拉框中的内容
+            $("#queryCategoryLevel2>option:gt(0)").remove();
+            $("#queryCategoryLevel3>option:gt(0)").remove();
+
+			if(parentId != 0){
+                //发送ajax请求
+                $.ajax({
+                    url:"/category/list",
+                    data:{parentId:parentId},
+                    success:function (data) {
+
+						var options = "";
+						//遍历数据
+						for(var i = 0 ; i < data.length; i++ ){
+						    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
+						}
+
+						//加载数据在二级分类下拉框中
+						$("#queryCategoryLevel2").append(options);
+
+                    },
+                    error:function () {
+                        console.log("二级分类加载失败");
+                    }
+                });
+			}
+        });
+
+
+		//3.根据二级分类去加载对应的三级分类
+        /*
+		 	加载三级分类信息的实现步骤:
+		 		1.当二级分类信息改变的时候，获取二级分类的id值，然后传递到后台进行数据查询
+		 		2.每当二级分类信息改变的时候，三级分类信息需要把前面加载的值清空
+
+         */
+		$("#queryCategoryLevel2").change(function () {
+			var parentId = $(this).val();
+
+			//清空三级分类下拉框
+			$("#queryCategoryLevel3>option:gt(0)").remove();
+
+			if(parentId != 0){
+			    $.ajax({
+					url:"/category/list",
+					data:{parentId:parentId},
+					success:function (data) {
+						var options="";
+
+						//遍历数据
+						for(var i = 0; i < data.length ; i++){
+						    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
+						}
+						//把数据写入到三级下拉框中
+						$("#queryCategoryLevel3").append(options);
+
+                    },
+					error:function () {
+						console.log("三级分类加载失败");
+                    }
+				});
+			}
+
+        });
+
 
 	    //向后台发送异步请求，加载APP状态和所属分类信息
 
@@ -269,8 +371,16 @@
         })
     }
 
-
-
-
+    /**
+	 *
+     * @param form 表示要提交的表单
+     * @param pageNo 当前页码
+     */
+    function page_nav(form,pageNo) {
+		//设置表单中当前页的值
+		form.pageNo.value = pageNo;
+		//提交表单
+		form.submit();
+    }
 
 </script>
