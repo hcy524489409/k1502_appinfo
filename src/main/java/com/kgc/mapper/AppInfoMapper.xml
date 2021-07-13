@@ -510,4 +510,84 @@
       versionId = #{versionid,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <select id="selectAppInfos" resultType="com.kgc.dto.AppInfoDto">
+    select
+    ai.id  id,
+    ai.softwareName softwarename,
+    ai.APKName apkname,
+    ai.supportROM supportrom,
+    ai.interfaceLanguage interfacelanguage,
+    ai.softwareSize softwaresize,
+    ai.devId devid,
+    ai.appInfo appinfo,
+    ai.downloads downloads,
+    ai.status status,
+    dd1.valueName statusname,
+    ai.flatformId flatformid,
+    dd2.valueName  flatformname,
+    ai.categoryLevel1 categorylevel1,
+    ac1.categoryName  categorylevel1name,
+    ai.categoryLevel2 categorylevel2,
+    ac2.categoryName categorylevel2name,
+    ai.categoryLevel3 categorylevel3,
+    ac3.categoryName categorylevel3name,
+    ai.versionId versionid,
+    av.versionNo versionname
+    from  app_info ai
+    left join data_dictionary dd1
+    on ai.status = dd1.valueId
+    left join data_dictionary dd2
+    on ai.flatformId = dd2.valueId
+    left join app_category ac1
+    on ai.categoryLevel1 = ac1.id
+    left join app_category ac2
+    on ai.categoryLevel2 = ac2.id
+    left join app_category ac3
+    on ai.categoryLevel3 = ac3.id
+    left join app_version av
+    on ai.versionId = av.id
+    where dd1.typeName = 'APP状态'
+    and dd2.typeName = '所属平台'
+    <if test="devid != null and devid != 0">
+      and devId = #{devid}
+    </if>
+    <if test="softwarename != null and softwarename != ''">
+      and softwareName like concat('%',#{softwarename},'%')
+    </if>
+    <if test="status != null and status != 0">
+      and status = #{status}
+    </if>
+    <if test="flatformid != null and flatformid != 0">
+      and flatformId = #{flatformid}
+    </if>
+    <if test="categorylevel1 != null and categorylevel1 !=0">
+      and categoryLevel1 = #{categorylevel1}
+    </if>
+    <if test="categorylevel2 != null and categorylevel2 !=0">
+      and categoryLevel2 = #{categorylevel2}
+    </if>
+    <if test="categorylevel3 != null and categorylevel3 !=0">
+      and categoryLevel3 = #{categorylevel3}
+    </if>
+  </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </mapper>

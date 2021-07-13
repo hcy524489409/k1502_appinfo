@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/app")
@@ -32,10 +34,10 @@ public class AppInfoController {
     @RequestMapping("/list")
     public String list( AppInfoCondition appInfoCondition, HttpSession session, Model model){
         //因为第一次访问没有带任何的数据，需要对查询条件进行创建
-        if(null == appInfoCondition){
+        /*if(null == appInfoCondition){
             appInfoCondition = new AppInfoCondition();
             appInfoCondition.setPageNo(1);
-        }
+        }*/
         //查询的时候需要获取登录用户的id
         DevUser devUser = (DevUser)session.getAttribute("devUser");
         //如果用户不存在，让用户回去登录
@@ -53,5 +55,25 @@ public class AppInfoController {
     }
 
 
+    @RequestMapping("/toAdd")
+    public String toAdd(){
+        return "developer/appinfoadd";
+    }
+
+    @RequestMapping("/verificationAPKName")
+    @ResponseBody
+    public Map<String,Object> verificationAPKName(String apkname){
+        //用于封装验证结果
+        Map<String,Object> map = new HashMap<String, Object>();
+
+        boolean existsAPKName = appinfoService.isExistsAPKName(apkname);
+
+        if(existsAPKName){
+            map.put("error","apk名称已经被注册，请重新输入");
+        }else {
+            map.put("success","apk名称可以使用");
+        }
+        return map;
+    }
 
 }

@@ -30,7 +30,7 @@
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">APP状态</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select name="status" class="form-control" id="queryStatus">
-									<option value="">--请选择--</option>
+									<option value="0">--请选择--</option>
         						</select>
 							</div>
 						</div>
@@ -40,7 +40,7 @@
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">所属平台</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select name="flatformid" class="form-control" id="queryFlatformid">
-									<option value="">--请选择--</option>
+									<option value="0">--请选择--</option>
         						</select>
 							</div>
 						</div>
@@ -90,7 +90,7 @@
 				class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 				<div class="row">
 					<div class="col-sm-12">
-					<a href="${pageContext.request.contextPath}/dev/flatform/app/appinfoadd" class="btn btn-success btn-sm">新增APP基础信息</a>
+					<a href="/app/toAdd" class="btn btn-success btn-sm">新增APP基础信息</a>
 						<table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
 							cellspacing="0" width="100%" role="grid" aria-describedby="datatable-responsive_info" style="width: 100%;">
 							<thead>
@@ -246,18 +246,24 @@
 
 				//遍历数组
 				for(var i =0 ; i < data.length; i++ ){
+
 				    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
 				}
 
 
 				//3.把拼接的字符串添加到一级分类的下拉列表框中
 				$("#queryCategoryLevel1").append(options);
+                $("#queryCategoryLevel1").val(${appInfoCondition.categorylevel1 == null ? 0 : appInfoCondition.categorylevel1});
+                loadCategoryLeve2(); //从新加载二级分类的值
             },
 			error:function () {
 				console.log("加载失败");
             }
 		})
 
+
+        loadCategoryLeve2();
+        loadCategoryLeve3();
 		//2.根据一级分类的选择去加载对应的二级分类
 		/*
 			实现二级分类业务流程
@@ -268,36 +274,7 @@
 					传递的参数还是parentId 只不过这个id的值不一样
 				5.获取后台传递过来的值，然后加载到对应的二级分类下拉框中
 		 */
-        $("#queryCategoryLevel1").change(function () {
-			var parentId = $(this).val();
-			//如果父级id的值不等于0，才发送异步请求，不然请求的数据有问题
-            //1.清空二级和三级分类下拉框中的内容
-            $("#queryCategoryLevel2>option:gt(0)").remove();
-            $("#queryCategoryLevel3>option:gt(0)").remove();
-
-			if(parentId != 0){
-                //发送ajax请求
-                $.ajax({
-                    url:"/category/list",
-                    data:{parentId:parentId},
-                    success:function (data) {
-
-						var options = "";
-						//遍历数据
-						for(var i = 0 ; i < data.length; i++ ){
-						    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
-						}
-
-						//加载数据在二级分类下拉框中
-						$("#queryCategoryLevel2").append(options);
-
-                    },
-                    error:function () {
-                        console.log("二级分类加载失败");
-                    }
-                });
-			}
-        });
+        $("#queryCategoryLevel1").change(loadCategoryLeve2);
 
 
 		//3.根据二级分类去加载对应的三级分类
@@ -307,46 +284,86 @@
 		 		2.每当二级分类信息改变的时候，三级分类信息需要把前面加载的值清空
 
          */
-		$("#queryCategoryLevel2").change(function () {
-			var parentId = $(this).val();
+		$("#queryCategoryLevel2").change(loadCategoryLeve3);
 
-			//清空三级分类下拉框
-			$("#queryCategoryLevel3>option:gt(0)").remove();
 
-			if(parentId != 0){
-			    $.ajax({
-					url:"/category/list",
-					data:{parentId:parentId},
-					success:function (data) {
-						var options="";
+		//加载二级分类
+        function loadCategoryLeve2() {
+            var parentId = $("#queryCategoryLevel1").val();
+            //如果父级id的值不等于0，才发送异步请求，不然请求的数据有问题
+            //1.清空二级和三级分类下拉框中的内容
+            $("#queryCategoryLevel2>option:gt(0)").remove();
+            $("#queryCategoryLevel3>option:gt(0)").remove();
 
-						//遍历数据
-						for(var i = 0; i < data.length ; i++){
-						    options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
-						}
-						//把数据写入到三级下拉框中
-						$("#queryCategoryLevel3").append(options);
+            if(parentId != 0){
+                //发送ajax请求
+                $.ajax({
+                    url:"/category/list",
+                    data:{parentId:parentId},
+                    success:function (data) {
+
+                        var options = "";
+                        //遍历数据
+                        for(var i = 0 ; i < data.length; i++ ){
+                            options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
+                        }
+
+                        //加载数据在二级分类下拉框中
+                        $("#queryCategoryLevel2").append(options);
+						//回显数据
+                        $("#queryCategoryLevel2").val(${appInfoCondition.categorylevel2 == null ? 0 : appInfoCondition.categorylevel2});
+						//加载三级分类的数据
+                        loadCategoryLeve3();
+                    },
+                    error:function () {
+                        console.log("二级分类加载失败");
+                    }
+                });
+            }
+        }
+
+		//加载3级分类
+        function loadCategoryLeve3() {
+            var parentId = $("#queryCategoryLevel2").val();
+
+            //清空三级分类下拉框
+            $("#queryCategoryLevel3>option:gt(0)").remove();
+
+            if(parentId != 0){
+                $.ajax({
+                    url:"/category/list",
+                    data:{parentId:parentId},
+                    success:function (data) {
+                        var options="";
+
+                        //遍历数据
+                        for(var i = 0; i < data.length ; i++){
+                            options += "<option value='"+data[i].id+"'>"+data[i].categoryname+"</option>";
+                        }
+                        //把数据写入到三级下拉框中
+                        $("#queryCategoryLevel3").append(options);
+						//回显数据
+						$("#queryCategoryLevel3").val(${appInfoCondition.categorylevel3 == null ? 0 : appInfoCondition.categorylevel3});
 
                     },
-					error:function () {
-						console.log("三级分类加载失败");
+                    error:function () {
+                        console.log("三级分类加载失败");
                     }
-				});
-			}
+                });
+            }
 
-        });
-
+        }
 
 	    //向后台发送异步请求，加载APP状态和所属分类信息
 
 		//是分两次加载，还是一次加载?  两次
-		loadDictionary("APP状态","queryStatus");
-		loadDictionary("所属平台","queryFlatformid");
+		loadDictionary("APP状态","queryStatus",${appInfoCondition.status == null ? 0 : appInfoCondition.status});
+		loadDictionary("所属平台","queryFlatformid",${appInfoCondition.flatformid == null ? 0 : appInfoCondition.flatformid});
     })
 
 
 	//加载数据字典的函数
-	function loadDictionary(tyname,eleId) {
+	function loadDictionary(tyname,eleId,dictionaryValue) {
         $.ajax({
             url:"/data/dictionary",
             data:{typename:tyname},
@@ -363,6 +380,8 @@
 
                 //把字符串写入到下拉列表框中
                 $("#"+eleId).append(options);
+                //给这个下拉列表框一个value值，这样这个下拉框就会默认选中这个值对应的内容
+                $("#"+eleId).val(dictionaryValue);
 
             },
             error:function () {

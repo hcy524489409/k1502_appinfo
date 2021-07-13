@@ -18,4 +18,13 @@ public interface AppinfoService {
     PageInfo<AppInfoDto> selectAppInfoByCondition(AppInfoCondition appInfoCondition);
 
     List<AppInfo> selectAppInfoAll();
+
+    PageInfo<AppInfoDto> selectAppInfoDtosByCondition(AppInfoCondition appInfoCondition);
+
+    /**
+     * 验证apkname是否已经存在
+     * @param apkname
+     * @return
+     */
+    boolean isExistsAPKName(String apkname);
 }

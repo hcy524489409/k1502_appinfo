@@ -88,6 +88,7 @@ public class AppinfoServiceImpl implements AppinfoService {
         //3.查询APP信息
         List<AppInfo> appInfos = appInfoMapper.selectByExample(appInfoExample);
 
+        //创建分页工具类
         PageInfo pageInfo = new PageInfo(appInfos);
 
         //创建一个List<AppInfoDto>
@@ -170,7 +171,7 @@ public class AppinfoServiceImpl implements AppinfoService {
             //把赋值完成后的对象添加到集合中
             appInfoDtos.add(appInfoDto);
         }
-        //6.创建PageInfo
+        //6. 使用appInfoDtos最终要显示的数据，替换掉APPinfo里面的数据
         pageInfo.setList(appInfoDtos);
         //7.return
         return pageInfo;
@@ -179,5 +180,37 @@ public class AppinfoServiceImpl implements AppinfoService {
     @Override
     public List<AppInfo> selectAppInfoAll() {
         return appInfoMapper.selectByExample(null);
+    }
+
+    @Override
+    public PageInfo<AppInfoDto> selectAppInfoDtosByCondition(AppInfoCondition appInfoCondition) {
+
+        //开启分页
+        PageHelper.startPage(appInfoCondition.getPageNo(),appInfoCondition.getPageSize());
+
+        List<AppInfoDto> appInfoDtos = appInfoMapper.selectAppInfos(appInfoCondition);
+
+        //创建分页工具
+        return new PageInfo<AppInfoDto>(appInfoDtos);
+    }
+
+    @Override
+    public boolean isExistsAPKName(String apkname) {
+        //创建一个查询条件
+        AppInfoExample example = new AppInfoExample();
+        AppInfoExample.Criteria criteria = example.createCriteria();
+
+        //添加查询条件到条件类中
+        criteria.andApknameEqualTo(apkname);
+
+        //执行查询方法
+        List<AppInfo> appInfos = appInfoMapper.selectByExample(example);
+
+        if(null == appInfos || appInfos.size() == 0 ){
+            return false; //表示用户输入没有重复
+        }else {
+            return true; //表示用户输入有重复
+        }
+
     }
 }

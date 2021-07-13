@@ -1,5 +1,7 @@
 package com.kgc.mapper;
 
+import com.kgc.condition.AppInfoCondition;
+import com.kgc.dto.AppInfoDto;
 import com.kgc.pojo.AppInfo;
 import com.kgc.pojo.AppInfoExample;
 import java.util.List;
@@ -27,4 +29,12 @@ public interface AppInfoMapper {
     int updateByPrimaryKeySelective(AppInfo record);
 
     int updateByPrimaryKey(AppInfo record);
+
+    /**
+     * 自定义的一个多表联查的方法
+     * @param appInfoCondition 查询条件
+     * @return
+     */
+    List<AppInfoDto> selectAppInfos(AppInfoCondition appInfoCondition);
+
 }
